@@ -1,0 +1,676 @@
+<html lang="ja" vid="0"><head vid="1">
+    <meta charset="UTF-8" vid="2">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" vid="3">
+    <title vid="4">Arcana | AI Tarot Divination Engine</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" vid="5">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" vid="6">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;800&amp;family=Noto+Sans+JP:wght@300;400;500;700&amp;display=swap" rel="stylesheet" vid="7">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" vid="8"></script>
+
+    <style vid="9">
+        :root {
+            --bg-deep: #0d0a1a;
+            --accent-purple: #6b3fa0;
+            --accent-purple-glow: rgba(107, 63, 160, 0.4);
+            --accent-gold: #c9a84c;
+            --accent-gold-glow: rgba(201, 168, 76, 0.3);
+            --text-primary: #e8e4f0;
+            --text-muted: #9b94a8;
+            --glass-bg: rgba(232, 228, 240, 0.03);
+            --glass-border: rgba(232, 228, 240, 0.08);
+            
+            --font-serif: 'Cinzel', serif;
+            --font-sans: 'Noto Sans JP', sans-serif;
+            
+            --space-xs: 0.25rem;
+            --space-sm: 0.5rem;
+            --space-md: 1rem;
+            --space-lg: 2rem;
+            --space-xl: 4rem;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-deep);
+            color: var(--text-primary);
+            font-family: var(--font-sans);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            line-height: 1.6;
+        }
+
+        
+        #canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        
+        .vignette {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: radial-gradient(circle at center, transparent 0%, var(--bg-deep) 100%);
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .ambient-glow {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, var(--accent-purple-glow) 0%, transparent 70%);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1;
+            pointer-events: none;
+            filter: blur(50px);
+        }
+
+        
+        .ui-layer {
+            position: relative;
+            z-index: 10;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: var(--space-lg);
+        }
+
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: var(--space-lg);
+            border-bottom: 1px solid var(--glass-border);
+            position: relative;
+        }
+
+        .logo {
+            font-family: var(--font-serif);
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: 0.2em;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+
+        .logo::before {
+            content: '';
+            display: block;
+            width: 12px;
+            height: 12px;
+            background: var(--accent-gold);
+            transform: rotate(45deg);
+            box-shadow: 0 0 10px var(--accent-gold);
+        }
+
+        .system-status {
+            font-family: var(--font-sans);
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+
+        .pulse-dot {
+            width: 6px;
+            height: 6px;
+            background-color: var(--accent-gold);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(201, 168, 76, 0.7); }
+            70% { box-shadow: 0 0 0 6px rgba(201, 168, 76, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(201, 168, 76, 0); }
+        }
+
+        
+        main {
+            flex-grow: 1;
+            display: grid;
+            grid-template-columns: 1fr 1.2fr 1fr;
+            gap: var(--space-xl);
+            align-items: center;
+            margin-top: var(--space-xl);
+        }
+
+        @media (max-width: 1024px) {
+            main {
+                grid-template-columns: 1fr;
+                gap: var(--space-lg);
+                text-align: center;
+            }
+        }
+
+        
+        .intro-section {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-md);
+        }
+
+        .eyebrow {
+            font-family: var(--font-sans);
+            font-size: 0.75rem;
+            color: var(--accent-gold);
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+        }
+        
+        .eyebrow::before, .eyebrow::after {
+            content: '';
+            height: 1px;
+            width: 20px;
+            background: var(--accent-gold);
+            opacity: 0.5;
+        }
+
+        h1 {
+            font-family: var(--font-serif);
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            line-height: 1.1;
+            font-weight: 400;
+            letter-spacing: 0.05em;
+        }
+
+        .h1-accent {
+            font-style: italic;
+            color: var(--accent-purple);
+            display: block;
+        }
+
+        .description {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            max-width: 400px;
+            font-weight: 300;
+            line-height: 1.8;
+        }
+
+        @media (max-width: 1024px) {
+            .intro-section { align-items: center; }
+            .eyebrow::before { display: none; }
+            .description { max-width: 600px; margin: 0 auto; }
+        }
+
+        
+        .core-container {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 500px;
+        }
+
+        .orbital-rings {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .ring-1 { width: 300px; height: 300px; border: 1px dashed var(--accent-purple); opacity: 0.5; animation: rotate 30s linear infinite; }
+        .ring-2 { width: 380px; height: 380px; border: 1px solid var(--glass-border); animation: rotate 45s linear infinite reverse; }
+        .ring-3 { width: 450px; height: 450px; border-left: 1px solid var(--accent-gold); border-right: 1px solid transparent; border-top: 1px solid transparent; border-bottom: 1px solid transparent; animation: rotate 20s linear infinite; }
+
+        @keyframes rotate { 100% { transform: rotate(360deg); } }
+
+        .character-mask {
+            position: relative;
+            width: 280px;
+            height: 400px;
+            border-radius: 140px; 
+            overflow: hidden;
+            z-index: 2;
+            background: linear-gradient(to bottom, transparent, rgba(107, 63, 160, 0.2));
+            box-shadow: inset 0 0 30px rgba(0,0,0,0.8), 0 0 50px rgba(107, 63, 160, 0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .character-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: top center;
+            filter: contrast(1.1) brightness(0.9);
+            mix-blend-mode: luminosity; 
+            transition: all 0.5s ease;
+        }
+
+        .core-container:hover .character-img {
+            mix-blend-mode: normal;
+            filter: contrast(1.1) brightness(1);
+        }
+
+        .data-label {
+            position: absolute;
+            font-family: var(--font-sans);
+            font-size: 0.65rem;
+            color: var(--accent-gold);
+            letter-spacing: 0.1em;
+            background: rgba(0,0,0,0.5);
+            padding: 2px 8px;
+            border: 1px solid var(--accent-gold);
+            border-radius: 2px;
+            z-index: 3;
+            backdrop-filter: blur(4px);
+        }
+
+        .label-top { top: 20px; right: 20px; }
+        .label-bottom { bottom: 20px; left: 20px; }
+
+        
+        .interaction-section {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-lg);
+        }
+
+        .cta-container {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-sm);
+        }
+
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-md);
+            background: linear-gradient(135deg, #c9a84c, #a88836);
+            color: #0d0a1a;
+            font-family: var(--font-sans);
+            font-weight: 700;
+            font-size: 1rem;
+            padding: 1rem 2rem;
+            text-decoration: none;
+            border-radius: 4px;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            box-shadow: 0 0 20px var(--accent-gold-glow);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%; width: 50%; height: 100%;
+            background: linear-gradient(to right, transparent, rgba(255,255,255,0.8), transparent);
+            transform: skewX(-20deg);
+            animation: shine 4s infinite;
+        }
+
+        @keyframes shine {
+            0% { left: -100%; }
+            20% { left: 200%; }
+            100% { left: 200%; }
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 30px rgba(201, 168, 76, 0.6);
+        }
+
+        .cta-subtext {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-align: center;
+        }
+
+        
+        .feature-grid {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-md);
+        }
+
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            padding: var(--space-md) var(--space-lg);
+            border-radius: 8px;
+            display: flex;
+            align-items: flex-start;
+            gap: var(--space-md);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 2px; height: 100%;
+            background: var(--accent-purple);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .glass-card:hover {
+            background: rgba(232, 228, 240, 0.05);
+            border-color: rgba(255,255,255,0.15);
+            transform: translateX(5px);
+        }
+
+        .glass-card:hover::before { opacity: 1; }
+
+        .card-icon {
+            color: var(--accent-gold);
+            font-size: 1.2rem;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .card-content h3 {
+            font-family: var(--font-serif);
+            font-size: 0.9rem;
+            margin-bottom: 4px;
+            letter-spacing: 0.05em;
+        }
+
+        .card-content p {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-weight: 300;
+        }
+
+        
+        .crosshair {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            opacity: 0.3;
+            pointer-events: none;
+        }
+        .crosshair::before, .crosshair::after {
+            content: ''; position: absolute; background: var(--text-primary);
+        }
+        .crosshair::before { top: 50%; left: 0; width: 100%; height: 1px; }
+        .crosshair::after { left: 50%; top: 0; width: 1px; height: 100%; }
+
+        .ch-1 { top: var(--space-lg); left: var(--space-lg); }
+        .ch-2 { bottom: var(--space-lg); right: var(--space-lg); }
+
+        
+        .system-footer {
+            margin-top: auto;
+            padding-top: var(--space-xl);
+            display: flex;
+            justify-content: space-between;
+            font-family: monospace;
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            opacity: 0.5;
+            letter-spacing: 0.1em;
+        }
+
+    </style>
+</head>
+<body vid="10">
+
+    
+    <div id="canvas-container" vid="11"></div>
+    <div class="vignette" vid="12"></div>
+    <div class="ambient-glow" vid="13"></div>
+
+    
+    <div class="ui-layer" vid="14">
+        
+        <div class="crosshair ch-1" vid="15"></div>
+        <div class="crosshair ch-2" vid="16"></div>
+
+        <header vid="17">
+            <div class="logo" vid="18">ARCANA</div>
+            <div class="system-status" vid="19">
+                <div class="pulse-dot" vid="20"></div>
+                Engine Active // V.2.4
+            </div>
+        </header>
+
+        <main vid="21">
+            
+            <section class="intro-section" vid="22">
+                <div class="eyebrow" vid="23">Initialize Sequence</div>
+                <h1 vid="24">
+                    Unveil<br vid="25">
+                    <span class="h1-accent" vid="26">The Future</span>
+                </h1>
+                <p class="description" vid="27">
+                    最新のAI演算と古のタロットが融合。見習い占い師「アルカ」と共に、不確かな運命の糸を解き明かす、次世代のパーソナル・ディヴィネーション・エンジン。
+                </p>
+                <div style="font-family: monospace; font-size: 0.7rem; color: var(--accent-purple); margin-top: 1rem; opacity: 0.7;" vid="28">
+                    [ SYS.MSG: SYNC_RATE_OPTIMAL ]<br vid="29">
+                    [ TARGET: arucana.fun ]
+                </div>
+            </section>
+
+            
+            <section class="core-container" vid="30">
+                <div class="orbital-rings ring-1" vid="31"></div>
+                <div class="orbital-rings ring-2" vid="32"></div>
+                <div class="orbital-rings ring-3" vid="33"></div>
+                
+                <div class="character-mask" vid="34">
+                    <img src="https://sawada3.com/uranai-bot/arca_welcome.png" alt="Alca - Apprentice Fortune Teller" class="character-img" vid="35">
+                    <div class="data-label label-top" vid="36">ID: ALCA_01</div>
+                    <div class="data-label label-bottom" vid="37">LNK: STABLE</div>
+                </div>
+            </section>
+
+            
+            <section class="interaction-section" vid="38">
+                
+                <div class="cta-container" vid="39">
+                    <a href="https://lin.ee/xxxxx" class="btn-primary" vid="40">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" vid="41"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" vid="42"></path></svg>
+                        LINEで接続する
+                    </a>
+                    <div class="cta-subtext" vid="43">友だち追加で運命の同期を開始</div>
+                </div>
+
+                <div class="feature-grid" vid="44">
+                    <div class="glass-card" vid="45">
+                        <div class="card-icon" vid="46">✧</div>
+                        <div class="card-content" vid="47">
+                            <h3 vid="48">AI Tarot Divination</h3>
+                            <p vid="49">アルカがAIを介して高精度なリーディングを実行。毎日の運勢から深い悩みまで解読します。</p>
+                        </div>
+                    </div>
+                    
+                    <div class="glass-card" vid="50">
+                        <div class="card-icon" vid="51">⟡</div>
+                        <div class="card-content" vid="52">
+                            <h3 vid="53">Character Raising</h3>
+                            <p vid="54">対話を重ねることでアルカの占い精度と親密度が上昇。あなただけの専属占い師へ成長。</p>
+                        </div>
+                    </div>
+
+                    <div class="glass-card" vid="55">
+                        <div class="card-icon" vid="56">◈</div>
+                        <div class="card-content" vid="57">
+                            <h3 vid="58">Arcana Premium</h3>
+                            <p vid="59">サブスクリプションで回数無制限の深い啓示と、特殊なスプレッド展開が解放されます。</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <div class="system-footer" vid="60">
+            <div vid="61">© 2024 ARCANA.FUN ALL RIGHTS RESERVED.</div>
+            <div vid="62">[ NODE: TOKYO_01 ] [ LATENCY: 12MS ]</div>
+        </div>
+    </div>
+
+    
+    <script vid="63">
+        const initThreeJS = () => {
+            const container = document.getElementById('canvas-container');
+            const scene = new THREE.Scene();
+            scene.fog = new THREE.FogExp2(0x0d0a1a, 0.001);
+
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000);
+            camera.position.z = 800;
+
+            const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            container.appendChild(renderer.domElement);
+
+            
+            const coreGeometry = new THREE.BufferGeometry();
+            const coreCount = 4000;
+            const corePositions = new Float32Array(coreCount * 3);
+            const coreColors = new Float32Array(coreCount * 3);
+
+            const color1 = new THREE.Color(0x6b3fa0); 
+            const color2 = new THREE.Color(0xc9a84c); 
+            const color3 = new THREE.Color(0xe8e4f0); 
+
+            for(let i = 0; i < coreCount * 3; i+=3) {
+                
+                const r = 400 * Math.cbrt(Math.random());
+                const theta = Math.random() * 2 * Math.PI;
+                const phi = Math.acos(2 * Math.random() - 1);
+
+                corePositions[i] = r * Math.sin(phi) * Math.cos(theta);
+                corePositions[i+1] = r * Math.sin(phi) * Math.sin(theta);
+                corePositions[i+2] = r * Math.cos(phi);
+
+                
+                const mixRatio = Math.random();
+                let c = color1;
+                if(mixRatio > 0.8) c = color2;
+                else if (mixRatio > 0.6) c = color3;
+
+                coreColors[i] = c.r;
+                coreColors[i+1] = c.g;
+                coreColors[i+2] = c.b;
+            }
+
+            coreGeometry.setAttribute('position', new THREE.BufferAttribute(corePositions, 3));
+            coreGeometry.setAttribute('color', new THREE.BufferAttribute(coreColors, 3));
+
+            
+            const canvas = document.createElement('canvas');
+            canvas.width = 16;
+            canvas.height = 16;
+            const context = canvas.getContext('2d');
+            const gradient = context.createRadialGradient(8, 8, 0, 8, 8, 8);
+            gradient.addColorStop(0, 'rgba(255,255,255,1)');
+            gradient.addColorStop(1, 'rgba(255,255,255,0)');
+            context.fillStyle = gradient;
+            context.fillRect(0, 0, 16, 16);
+            const particleTexture = new THREE.CanvasTexture(canvas);
+
+            const coreMaterial = new THREE.PointsMaterial({
+                size: 3,
+                vertexColors: true,
+                map: particleTexture,
+                blending: THREE.AdditiveBlending,
+                transparent: true,
+                opacity: 0.6,
+                depthWrite: false
+            });
+
+            const particleSystem = new THREE.Points(coreGeometry, coreMaterial);
+            scene.add(particleSystem);
+
+            
+            const bgGeometry = new THREE.BufferGeometry();
+            const bgCount = 1000;
+            const bgPositions = new Float32Array(bgCount * 3);
+            for(let i = 0; i < bgCount * 3; i++) {
+                bgPositions[i] = (Math.random() - 0.5) * 3000;
+            }
+            bgGeometry.setAttribute('position', new THREE.BufferAttribute(bgPositions, 3));
+            const bgMaterial = new THREE.PointsMaterial({
+                color: 0x6b3fa0, size: 1.5, transparent: true, opacity: 0.3
+            });
+            const bgSystem = new THREE.Points(bgGeometry, bgMaterial);
+            scene.add(bgSystem);
+
+            
+            let mouseX = 0;
+            let mouseY = 0;
+            let targetX = 0;
+            let targetY = 0;
+            const windowHalfX = window.innerWidth / 2;
+            const windowHalfY = window.innerHeight / 2;
+
+            document.addEventListener('mousemove', (event) => {
+                mouseX = (event.clientX - windowHalfX) * 0.5;
+                mouseY = (event.clientY - windowHalfY) * 0.5;
+            });
+
+            
+            const clock = new THREE.Clock();
+
+            const animate = () => {
+                requestAnimationFrame(animate);
+                const elapsedTime = clock.getElapsedTime();
+
+                targetX = mouseX * 0.001;
+                targetY = mouseY * 0.001;
+
+                
+                particleSystem.rotation.y += 0.001 + (targetX - particleSystem.rotation.y) * 0.05;
+                particleSystem.rotation.x += 0.0005 + (targetY - particleSystem.rotation.x) * 0.05;
+                
+                bgSystem.rotation.y += 0.0002;
+
+                
+                const scale = 1 + Math.sin(elapsedTime * 0.5) * 0.02;
+                particleSystem.scale.set(scale, scale, scale);
+
+                renderer.render(scene, camera);
+            };
+
+            animate();
+
+            
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+        };
+
+        
+        document.addEventListener('DOMContentLoaded', initThreeJS);
+    </script>
+
+</body></html>
