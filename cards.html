@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>タロットカード一覧 - Arcana | 78枚の意味と解釈</title>
+<meta name="description" content="Arcanaオリジナルタロットカード78枚の意味と解釈。大アルカナ22枚・小アルカナ56枚の正位置・逆位置を解説。">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%230d0a1a' width='100' height='100' rx='20'/><path d='M50 15 L65 45 L50 75 L35 45 Z' fill='%23c9a84c'/><circle cx='50' cy='45' r='8' fill='%236b3fa0'/></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #0a0812;
+  --bg-card: rgba(255,255,255,0.03);
+  --bg-card-hover: rgba(255,255,255,0.06);
+  --border: rgba(255,255,255,0.08);
+  --gold: #c9a84c;
+  --gold-light: #e8d48b;
+  --gold-dim: rgba(201,168,76,0.5);
+  --purple: #6b3fa0;
+  --purple-light: #9b6dd7;
+  --text: #c8c2d0;
+  --text-dim: #6b6478;
+  --text-bright: #eae6f0;
+  --wands: #e8913a;
+  --cups: #4a9ec9;
+  --swords: #a8b4c0;
+  --pentacles: #5daa68;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Noto Sans JP', sans-serif;
+  line-height: 1.7;
+  min-height: 100vh;
+}
+
+/* ヘッダー */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(10,8,18,0.9);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  padding: 16px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-logo {
+  font-family: 'Cinzel', serif;
+  color: var(--gold);
+  text-decoration: none;
+  font-size: 1.1rem;
+  letter-spacing: 0.2em;
+}
+
+.header-back {
+  color: var(--text-dim);
+  text-decoration: none;
+  font-size: 0.8rem;
+  transition: color 0.3s;
+}
+.header-back:hover { color: var(--gold); }
+
+/* ヒーロー */
+.hero {
+  text-align: center;
+  padding: 60px 24px 40px;
+  background: radial-gradient(ellipse at 50% 0%, rgba(107,63,160,0.1), transparent 70%);
+}
+
+.hero h1 {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  color: var(--gold);
+  letter-spacing: 0.12em;
+  margin-bottom: 12px;
+}
+
+.hero p {
+  color: var(--text-dim);
+  font-size: 0.9rem;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* フィルター */
+.filters {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  padding: 20px 24px 32px;
+  flex-wrap: wrap;
+}
+
+.filter-btn {
+  padding: 8px 20px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  font-size: 0.8rem;
+  font-family: 'Noto Sans JP', sans-serif;
+  cursor: pointer;
+  border-radius: 24px;
+  transition: all 0.3s;
+  letter-spacing: 0.05em;
+}
+
+.filter-btn:hover { border-color: var(--gold-dim); color: var(--text); }
+.filter-btn.active { border-color: var(--gold); color: var(--gold); background: rgba(201,168,76,0.08); }
+
+/* カードグリッド */
+.container { max-width: 1200px; margin: 0 auto; padding: 0 24px 80px; }
+
+.section-label {
+  font-family: 'Cinzel', serif;
+  font-size: 1.1rem;
+  color: var(--gold);
+  letter-spacing: 0.15em;
+  margin: 48px 0 24px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(201,168,76,0.15);
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.tarot-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.tarot-card:hover {
+  background: var(--bg-card-hover);
+  border-color: rgba(201,168,76,0.2);
+  transform: translateY(-2px);
+}
+
+.tarot-card.suit-wands:hover { border-color: rgba(232,145,58,0.3); }
+.tarot-card.suit-cups:hover { border-color: rgba(74,158,201,0.3); }
+.tarot-card.suit-swords:hover { border-color: rgba(168,180,192,0.3); }
+.tarot-card.suit-pentacles:hover { border-color: rgba(93,170,104,0.3); }
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.card-number {
+  font-family: 'Cinzel', serif;
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  letter-spacing: 0.1em;
+}
+
+.card-name-jp {
+  font-size: 1rem;
+  color: var(--text-bright);
+  font-weight: 500;
+}
+
+.card-name-en {
+  font-family: 'Cinzel', serif;
+  font-size: 0.75rem;
+  color: var(--gold-dim);
+  letter-spacing: 0.08em;
+  margin-bottom: 12px;
+}
+
+.card-meanings {
+  display: none;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+
+.tarot-card.expanded .card-meanings { display: block; }
+
+.meaning-label {
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  margin-bottom: 4px;
+  font-weight: 500;
+}
+
+.meaning-label.upright { color: var(--gold); }
+.meaning-label.reversed { color: var(--purple-light); }
+
+.meaning-text {
+  font-size: 0.82rem;
+  color: var(--text-dim);
+  line-height: 1.7;
+  margin-bottom: 10px;
+}
+
+.card-keywords {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.keyword {
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  background: rgba(255,255,255,0.04);
+  padding: 3px 10px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+}
+
+.expand-hint {
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  text-align: right;
+  opacity: 0.5;
+}
+
+.tarot-card.expanded .expand-hint { display: none; }
+
+/* フッター */
+.footer {
+  text-align: center;
+  padding: 32px 24px;
+  border-top: 1px solid var(--border);
+}
+
+.footer a {
+  color: var(--gold);
+  text-decoration: none;
+  font-size: 0.85rem;
+}
+
+.footer p {
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  margin-top: 8px;
+  font-family: monospace;
+  letter-spacing: 0.1em;
+}
+
+/* レスポンシブ */
+@media (max-width: 640px) {
+  .card-grid { grid-template-columns: 1fr; }
+  .filters { gap: 6px; }
+  .filter-btn { padding: 6px 14px; font-size: 0.75rem; }
+}
+
+/* アニメーション */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.tarot-card { animation: fadeIn 0.4s ease forwards; opacity: 0; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <a href="/" class="header-logo">◇ ARCANA</a>
+  <a href="/" class="header-back">← トップに戻る</a>
+</div>
+
+<div class="hero">
+  <h1>TAROT CARD ARCHIVE</h1>
+  <p>Arcanaオリジナルタロットカード78枚の意味と解釈。<br>カードをタップすると詳細が表示されます。</p>
+</div>
+
+<div class="filters">
+  <button class="filter-btn active" data-filter="all">ALL (78)</button>
+  <button class="filter-btn" data-filter="major">大アルカナ (22)</button>
+  <button class="filter-btn" data-filter="wands">ワンド (14)</button>
+  <button class="filter-btn" data-filter="cups">カップ (14)</button>
+  <button class="filter-btn" data-filter="swords">ソード (14)</button>
+  <button class="filter-btn" data-filter="pentacles">ペンタクル (14)</button>
+</div>
+
+<div class="container">
+  <div class="card-grid" id="cardGrid"></div>
+</div>
+
+<div class="footer">
+  <a href="/">◇ ARCANA トップへ</a>
+  <p>© <script>document.write(new Date().getFullYear())</script> ARCANA.FUN</p>
+</div>
+
+<script>
+const CARDS = [
+  // ─── 大アルカナ ───
+  {id:"0",name:"愚者",en:"The Fool",suit:"major",
+   upright:"新たな冒険の始まり。自由な精神で未知の世界に飛び込む勇気。無限の可能性が広がっている。",
+   reversed:"無計画さや軽率な行動への警告。地に足をつけて判断することが大切。",
+   keywords:["冒険","自由","可能性","純粋"]},
+  {id:"I",name:"魔術師",en:"The Magician",suit:"major",
+   upright:"才能と意志の力。必要なものはすべて手の中にある。創造力を発揮して行動に移す時。",
+   reversed:"才能の空回り。自信過剰や詐欺に注意。力の使い方を見直す時。",
+   keywords:["創造","意志","才能","行動"]},
+  {id:"II",name:"女教皇",en:"The High Priestess",suit:"major",
+   upright:"直感と内なる知恵。静かに心の声に耳を傾けることで真実が見える。神秘的な力の目覚め。",
+   reversed:"直感を無視している。表面的な判断に囚われず、内面を見つめ直して。",
+   keywords:["直感","神秘","知恵","内省"]},
+  {id:"III",name:"女帝",en:"The Empress",suit:"major",
+   upright:"豊かさと繁栄。母性的な愛情と創造力。美しいものに囲まれ、実りの時期を迎える。",
+   reversed:"過保護や依存。自分自身の成長を忘れないで。創造力のブロックを解放して。",
+   keywords:["豊穣","愛情","美","創造"]},
+  {id:"IV",name:"皇帝",en:"The Emperor",suit:"major",
+   upright:"安定した基盤とリーダーシップ。規律と秩序で物事を管理する力。権威と責任を持つ時。",
+   reversed:"支配的になりすぎている。柔軟性を失わず、他者の意見にも耳を傾けて。",
+   keywords:["権威","安定","秩序","統率"]},
+  {id:"V",name:"教皇",en:"The Hierophant",suit:"major",
+   upright:"伝統と教え。信頼できる師からの助言。精神的な成長と道徳的な指針を求める時。",
+   reversed:"形式にとらわれすぎ。自分なりの価値観を大切に。既存の枠を超える勇気を。",
+   keywords:["伝統","教え","信仰","道徳"]},
+  {id:"VI",name:"恋人",en:"The Lovers",suit:"major",
+   upright:"深い絆と調和。大切な選択の時。心に従って決断すれば、最高のパートナーシップが生まれる。",
+   reversed:"価値観の不一致。誘惑に惑わされず、本当に大切なものを見極めて。",
+   keywords:["愛","選択","調和","絆"]},
+  {id:"VII",name:"戦車",en:"The Chariot",suit:"major",
+   upright:"意志の力で困難を突破する。勝利に向かって突き進む時。自制心と決断力が鍵。",
+   reversed:"暴走や方向性の喪失。焦らず、一度立ち止まって戦略を練り直して。",
+   keywords:["勝利","前進","意志","克服"]},
+  {id:"VIII",name:"力",en:"Strength",suit:"major",
+   upright:"内なる強さと忍耐。優しさこそが本当の力。困難を愛と勇気で乗り越える。",
+   reversed:"自信の喪失や不安。自分の内なる力を信じて。無理に強がらなくて大丈夫。",
+   keywords:["勇気","忍耐","優しさ","内なる力"]},
+  {id:"IX",name:"隠者",en:"The Hermit",suit:"major",
+   upright:"内省と探求の時間。一人の時間が大切な答えをもたらす。知恵の光で道を照らす。",
+   reversed:"孤立しすぎている。必要な時は助けを求めて。内に閉じこもりすぎないで。",
+   keywords:["内省","孤独","知恵","探求"]},
+  {id:"X",name:"運命の輪",en:"Wheel of Fortune",suit:"major",
+   upright:"転機と幸運の到来。人生の流れが変わる時。チャンスを掴む準備を。",
+   reversed:"不運の連鎖や停滞。しかし輪は必ず回る。辛い時期もやがて過ぎ去る。",
+   keywords:["転機","運命","変化","好機"]},
+  {id:"XI",name:"正義",en:"Justice",suit:"major",
+   upright:"公正な判断と因果応報。正しい行いが正しい結果を生む。バランスと公平さを重視して。",
+   reversed:"不公平な状況。偏った判断をしていないか見直して。責任を受け入れる勇気を。",
+   keywords:["公正","均衡","真実","因果"]},
+  {id:"XII",name:"吊るされた男",en:"The Hanged Man",suit:"major",
+   upright:"視点の転換。一時的な犠牲が大きな気づきをもたらす。手放すことで得られるものがある。",
+   reversed:"無意味な犠牲や停滞。行動を先延ばしにしないで。新しい視点を取り入れて。",
+   keywords:["犠牲","転換","悟り","忍耐"]},
+  {id:"XIII",name:"死神",en:"Death",suit:"major",
+   upright:"終わりと再生。古いものが終わり、新しい始まりが訪れる。変容を恐れないで。",
+   reversed:"変化への抵抗。過去に執着せず、自然な流れに身を任せて。",
+   keywords:["変容","再生","終焉","刷新"]},
+  {id:"XIV",name:"節制",en:"Temperance",suit:"major",
+   upright:"調和とバランス。穏やかに物事を進めることで最良の結果を得る。忍耐が実を結ぶ時。",
+   reversed:"極端な行動やバランスの崩れ。中庸を心がけて。焦りは禁物。",
+   keywords:["調和","節度","忍耐","融合"]},
+  {id:"XV",name:"悪魔",en:"The Devil",suit:"major",
+   upright:"執着や誘惑。物質的な欲望に囚われていないか。自分を縛る鎖は自分で外せる。",
+   reversed:"束縛からの解放。悪習を断ち切る力が湧いてくる。自由への第一歩。",
+   keywords:["誘惑","束縛","欲望","執着"]},
+  {id:"XVI",name:"塔",en:"The Tower",suit:"major",
+   upright:"突然の崩壊と変革。古い構造が壊れることで真実が明らかに。痛みを伴うが必要な変化。",
+   reversed:"変化への恐怖。しかし崩壊を避け続けることはできない。受け入れる準備を。",
+   keywords:["崩壊","変革","衝撃","解放"]},
+  {id:"XVII",name:"星",en:"The Star",suit:"major",
+   upright:"希望と癒し。困難の後に訪れる平穏。夢を信じて進めば、宇宙が応えてくれる。",
+   reversed:"希望を見失っている。しかし星はいつも空にある。小さな光を見つけて。",
+   keywords:["希望","癒し","インスピレーション","信頼"]},
+  {id:"XVIII",name:"月",en:"The Moon",suit:"major",
+   upright:"不安と幻想。物事が不明瞭な時期。直感を信じつつも、冷静な判断を忘れずに。",
+   reversed:"恐れや不安からの解放。真実が徐々に明らかになる。混乱が収まっていく。",
+   keywords:["幻想","不安","直感","潜在意識"]},
+  {id:"XIX",name:"太陽",en:"The Sun",suit:"major",
+   upright:"喜びと成功。すべてが明るく照らされ、活力に満ちた時期。素直に幸せを享受して。",
+   reversed:"喜びが一時的に曇る。しかし太陽はすぐにまた顔を出す。楽観を忘れないで。",
+   keywords:["喜び","成功","活力","幸福"]},
+  {id:"XX",name:"審判",en:"Judgement",suit:"major",
+   upright:"目覚めと再評価。過去を振り返り、新たな使命に気づく時。魂の呼びかけに応えて。",
+   reversed:"自己批判が強すぎる。過去の後悔に囚われず、前を向いて。許しの力を。",
+   keywords:["覚醒","再生","使命","許し"]},
+  {id:"XXI",name:"世界",en:"The World",suit:"major",
+   upright:"完成と達成。一つのサイクルが美しく完結する。すべてが調和し、次のステージへ。",
+   reversed:"未完成の課題。もう少しで完成する。最後まで諦めず、仕上げを丁寧に。",
+   keywords:["完成","統合","達成","旅の終わり"]},
+
+  // ─── ワンド（火） ───
+  {id:"A",name:"ワンドのエース",en:"Ace of Wands",suit:"wands",
+   upright:"情熱の種が芽吹く。新しいプロジェクトやアイデアの始まり。創造的エネルギーに満ちている。",
+   reversed:"エネルギーの停滞。やる気が出ない時は無理をせず、タイミングを待って。",
+   keywords:["情熱","創造","新たな始まり"]},
+  {id:"2",name:"ワンドの2",en:"Two of Wands",suit:"wands",
+   upright:"計画と展望。世界が広がる可能性を感じている。大きなビジョンを描く時。",
+   reversed:"計画の遅れや迷い。恐れに支配されず、一歩踏み出す勇気を。",
+   keywords:["計画","展望","決断"]},
+  {id:"3",name:"ワンドの3",en:"Three of Wands",suit:"wands",
+   upright:"拡大と発展。努力が実を結び始める。さらなる成長のチャンスが見えてくる。",
+   reversed:"期待通りにいかない焦り。視野を広げて、別のアプローチを考えて。",
+   keywords:["発展","拡大","先見"]},
+  {id:"4",name:"ワンドの4",en:"Four of Wands",suit:"wands",
+   upright:"祝福と安定。目標の達成を祝う時。温かい仲間と喜びを分かち合える。",
+   reversed:"不安定な基盤。祝福を素直に受け取れていない。安心できる環境を整えて。",
+   keywords:["祝福","調和","安定"]},
+  {id:"5",name:"ワンドの5",en:"Five of Wands",suit:"wands",
+   upright:"競争と切磋琢磨。ライバルとの健全な争いが成長をもたらす。",
+   reversed:"無意味な争い。エネルギーの浪費を避け、協力の道を探って。",
+   keywords:["競争","挑戦","葛藤"]},
+  {id:"6",name:"ワンドの6",en:"Six of Wands",suit:"wands",
+   upright:"勝利と栄光。努力が認められ、称賛を受ける時。自信を持って前進して。",
+   reversed:"傲慢さへの警告。成功に酔いすぎず、謙虚さを忘れないで。",
+   keywords:["勝利","名誉","自信"]},
+  {id:"7",name:"ワンドの7",en:"Seven of Wands",suit:"wands",
+   upright:"防衛と信念。自分の立場を守り抜く強さ。困難に負けない意志力。",
+   reversed:"圧倒されている感覚。すべてを一人で抱え込まないで。助けを求めて。",
+   keywords:["防衛","勇敢","信念"]},
+  {id:"8",name:"ワンドの8",en:"Eight of Wands",suit:"wands",
+   upright:"急速な展開。物事がスピーディーに動き出す。チャンスの波に乗って。",
+   reversed:"遅延やミスコミュニケーション。焦らず確認を怠らないで。",
+   keywords:["速度","進展","活動"]},
+  {id:"9",name:"ワンドの9",en:"Nine of Wands",suit:"wands",
+   upright:"最後の試練。疲れていても諦めないで。ゴールはもう目の前にある。",
+   reversed:"疲弊しすぎている。休息を取ることも戦略の一つ。",
+   keywords:["忍耐","粘り強さ","警戒"]},
+  {id:"10",name:"ワンドの10",en:"Ten of Wands",suit:"wands",
+   upright:"重荷と責任。たくさんのものを背負っている。必要なものだけに絞る勇気を。",
+   reversed:"責任を手放すことで楽になれる。すべてを一人で抱えなくていい。",
+   keywords:["重荷","責任","過労"]},
+  {id:"Pg",name:"ワンドのペイジ",en:"Page of Wands",suit:"wands",
+   upright:"冒険心と好奇心。新しいことへの興味が湧き上がる。自由に探求して。",
+   reversed:"方向性の迷い。興味が散漫になりがち。一つに集中する力を。",
+   keywords:["探究","冒険","熱意"]},
+  {id:"Kn",name:"ワンドのナイト",en:"Knight of Wands",suit:"wands",
+   upright:"情熱的な行動力。大胆に突き進む力がある。エネルギッシュに挑戦して。",
+   reversed:"衝動的すぎる行動。後先考えず突っ走らないで。計画性を持って。",
+   keywords:["情熱","行動","大胆"]},
+  {id:"Q",name:"ワンドのクイーン",en:"Queen of Wands",suit:"wands",
+   upright:"自信と魅力。温かさと強さを兼ね備えたリーダー。周囲を明るく照らす存在。",
+   reversed:"自信の揺らぎ。他人の目を気にしすぎないで。あなたの光を信じて。",
+   keywords:["魅力","自信","温かさ"]},
+  {id:"K",name:"ワンドのキング",en:"King of Wands",suit:"wands",
+   upright:"ビジョンとリーダーシップ。大きな夢を実現する力。周囲を鼓舞して導く。",
+   reversed:"傲慢さやワンマン体質。チームの声に耳を傾けて。",
+   keywords:["リーダー","ビジョン","カリスマ"]},
+
+  // ─── カップ（水） ───
+  {id:"A",name:"カップのエース",en:"Ace of Cups",suit:"cups",
+   upright:"愛の始まり。感情が溢れ出す美しい瞬間。新しい恋や深い絆の予感。",
+   reversed:"感情のブロック。愛を受け取ることを恐れないで。心を開いて。",
+   keywords:["愛","感情","直感"]},
+  {id:"2",name:"カップの2",en:"Two of Cups",suit:"cups",
+   upright:"パートナーシップと相互理解。心と心が通じ合う関係。深い信頼で結ばれている。",
+   reversed:"関係のすれ違い。コミュニケーションを大切に。お互いの気持ちを確認して。",
+   keywords:["絆","パートナーシップ","調和"]},
+  {id:"3",name:"カップの3",en:"Three of Cups",suit:"cups",
+   upright:"友情と祝福。仲間と喜びを分かち合う。楽しい時間が心を満たしてくれる。",
+   reversed:"孤立感や仲間外れ。信頼できる人との時間を大切に。",
+   keywords:["友情","祝福","喜び"]},
+  {id:"4",name:"カップの4",en:"Four of Cups",suit:"cups",
+   upright:"退屈と無関心。目の前のチャンスに気づいていない。視点を変えてみて。",
+   reversed:"新しい可能性への気づき。心を開いてチャンスを受け入れる準備ができた。",
+   keywords:["無関心","内省","再評価"]},
+  {id:"5",name:"カップの5",en:"Five of Cups",suit:"cups",
+   upright:"喪失と悲しみ。失ったものに目を向けがち。でも振り返れば残っているものもある。",
+   reversed:"悲しみからの回復。前を向く力が戻ってくる。新しい希望が見えてくる。",
+   keywords:["喪失","悲嘆","後悔"]},
+  {id:"6",name:"カップの6",en:"Six of Cups",suit:"cups",
+   upright:"懐かしい記憶と純粋さ。過去の幸せな思い出が今のあなたを支えてくれる。",
+   reversed:"過去への執着。思い出に浸りすぎず、今を生きて。",
+   keywords:["郷愁","純粋","思い出"]},
+  {id:"7",name:"カップの7",en:"Seven of Cups",suit:"cups",
+   upright:"幻想と選択肢。たくさんの可能性があるが、現実的に一つを選ぶ必要がある。",
+   reversed:"幻想から目覚める。現実を直視して、地に足のついた選択を。",
+   keywords:["幻想","選択","夢想"]},
+  {id:"8",name:"カップの8",en:"Eight of Cups",suit:"cups",
+   upright:"手放しと旅立ち。今あるものに満足できないなら、新しい道を探す勇気を。",
+   reversed:"変化への恐れ。居心地の良い場所に留まる理由を考え直して。",
+   keywords:["旅立ち","探求","手放し"]},
+  {id:"9",name:"カップの9",en:"Nine of Cups",suit:"cups",
+   upright:"願望成就。望んでいたことが叶う幸福な時期。感謝の気持ちを忘れずに。",
+   reversed:"物質的な満足だけでは幸せになれない。本当に大切なものは何か考えて。",
+   keywords:["満足","幸福","願望成就"]},
+  {id:"10",name:"カップの10",en:"Ten of Cups",suit:"cups",
+   upright:"家族の幸福と愛の完成。心から満たされた状態。愛に包まれた日々。",
+   reversed:"家庭内の不調和。理想と現実のギャップ。一つずつ修復していって。",
+   keywords:["家族","幸福","調和"]},
+  {id:"Pg",name:"カップのペイジ",en:"Page of Cups",suit:"cups",
+   upright:"感受性豊かな心。直感的なメッセージが届く。クリエイティブな表現を楽しんで。",
+   reversed:"感情的になりすぎ。現実逃避に注意。感情と理性のバランスを。",
+   keywords:["感受性","直感","創造"]},
+  {id:"Kn",name:"カップのナイト",en:"Knight of Cups",suit:"cups",
+   upright:"ロマンチックな提案。感情に従って行動する時。愛の使者が訪れる。",
+   reversed:"非現実的な理想。甘い言葉に惑わされないで。現実を見て。",
+   keywords:["ロマンス","提案","理想"]},
+  {id:"Q",name:"カップのクイーン",en:"Queen of Cups",suit:"cups",
+   upright:"共感力と癒し。深い慈愛で周囲を包み込む。直感が冴え渡る時期。",
+   reversed:"感情に溺れている。他者を優先しすぎて自分を見失わないで。",
+   keywords:["共感","癒し","慈愛"]},
+  {id:"K",name:"カップのキング",en:"King of Cups",suit:"cups",
+   upright:"感情の成熟と寛容さ。深い愛情と冷静さを兼ね備えた存在。安定した心で導く。",
+   reversed:"感情の抑圧。弱さを見せることも強さ。心の声に正直になって。",
+   keywords:["寛容","成熟","穏やか"]},
+
+  // ─── ソード（風） ───
+  {id:"A",name:"ソードのエース",en:"Ace of Swords",suit:"swords",
+   upright:"真実の発見と明晰さ。曇りが晴れて物事の本質が見える。正義と知性の力。",
+   reversed:"混乱した思考。情報過多に注意。一度頭を整理して。",
+   keywords:["真実","明晰","知性"]},
+  {id:"2",name:"ソードの2",en:"Two of Swords",suit:"swords",
+   upright:"決断の保留。どちらを選ぶか迷っている。心を静めて直感に従って。",
+   reversed:"優柔不断からの脱出。避けていた決断に向き合う時。",
+   keywords:["均衡","決断","葛藤"]},
+  {id:"3",name:"ソードの3",en:"Three of Swords",suit:"swords",
+   upright:"心の痛みと悲しみ。辛い経験だが、この痛みが成長をもたらす。",
+   reversed:"痛みからの回復。傷が癒え始めている。自分を許して。",
+   keywords:["悲痛","失恋","解放"]},
+  {id:"4",name:"ソードの4",en:"Four of Swords",suit:"swords",
+   upright:"休息と回復。心身ともに休む必要がある。静かな時間が答えを教えてくれる。",
+   reversed:"休息不足。焦って動き出す前に、しっかり回復して。",
+   keywords:["休息","瞑想","回復"]},
+  {id:"5",name:"ソードの5",en:"Five of Swords",suit:"swords",
+   upright:"対立と敗北感。勝ち負けにこだわりすぎていないか。時には引く勇気も。",
+   reversed:"争いの終結。和解の道が開ける。過去の対立を手放して。",
+   keywords:["対立","敗北","教訓"]},
+  {id:"6",name:"ソードの6",en:"Six of Swords",suit:"swords",
+   upright:"移行と回復。困難な状況から穏やかな場所へ移動する。未来は明るい。",
+   reversed:"過去から離れられない。しかし前に進むしかない。一歩ずつ。",
+   keywords:["移行","回復","旅立ち"]},
+  {id:"7",name:"ソードの7",en:"Seven of Swords",suit:"swords",
+   upright:"戦略と知恵。正面突破よりも巧みなアプローチが有効。しかし不誠実にならないで。",
+   reversed:"隠し事が明るみに。正直であることが最善の策。",
+   keywords:["策略","知恵","慎重"]},
+  {id:"8",name:"ソードの8",en:"Eight of Swords",suit:"swords",
+   upright:"囚われの感覚。自分で作った制限に縛られている。実は脱出できる。",
+   reversed:"制限からの解放。新しい視点で状況を見直すと、道が開ける。",
+   keywords:["束縛","制限","解放"]},
+  {id:"9",name:"ソードの9",en:"Nine of Swords",suit:"swords",
+   upright:"不安と悪夢。心配事が眠れないほど大きくなっている。でも恐れの多くは幻想。",
+   reversed:"不安の軽減。最悪の事態は起こらない。心を落ち着けて。",
+   keywords:["不安","恐怖","杞憂"]},
+  {id:"10",name:"ソードの10",en:"Ten of Swords",suit:"swords",
+   upright:"終わりと新しい夜明け。最も辛い時期だが、これ以上悪くはならない。夜明け前が一番暗い。",
+   reversed:"最悪期を脱する。回復の兆し。ゆっくりと立ち上がって。",
+   keywords:["終焉","再起","夜明け"]},
+  {id:"Pg",name:"ソードのペイジ",en:"Page of Swords",suit:"swords",
+   upright:"鋭い知性と好奇心。新しい情報やアイデアに敏感。真実を追求する姿勢。",
+   reversed:"皮肉や批判的になりすぎ。言葉の使い方に気をつけて。",
+   keywords:["知性","好奇心","観察"]},
+  {id:"Kn",name:"ソードのナイト",en:"Knight of Swords",suit:"swords",
+   upright:"素早い行動と決断。迷いなく突き進む力。知性と行動力の融合。",
+   reversed:"無謀な行動。考えなしに突き進まないで。一呼吸おいて。",
+   keywords:["迅速","決断","知性"]},
+  {id:"Q",name:"ソードのクイーン",en:"Queen of Swords",suit:"swords",
+   upright:"冷静な判断力と独立心。感情に流されず、真実を見極める力。",
+   reversed:"冷酷さや孤立。感情を完全に排除する必要はない。バランスを。",
+   keywords:["知性","独立","冷静"]},
+  {id:"K",name:"ソードのキング",en:"King of Swords",suit:"swords",
+   upright:"論理的思考と公正さ。知性と経験で正しい判断を下す。権威ある助言者。",
+   reversed:"権力の乱用。正しさを振りかざしていないか。思いやりも大切。",
+   keywords:["知性","公正","権威"]},
+
+  // ─── ペンタクル（地） ───
+  {id:"A",name:"ペンタクルのエース",en:"Ace of Pentacles",suit:"pentacles",
+   upright:"物質的な恵みの始まり。新しい仕事や収入源の到来。具体的なチャンスを掴んで。",
+   reversed:"チャンスを逃しそう。地に足をつけて、確実に行動して。",
+   keywords:["繁栄","チャンス","物質"]},
+  {id:"2",name:"ペンタクルの2",en:"Two of Pentacles",suit:"pentacles",
+   upright:"バランスと適応力。複数の事柄を上手にやりくりする。柔軟に対応して。",
+   reversed:"バランスの崩壊。あれもこれもは無理。優先順位をつけて。",
+   keywords:["均衡","適応","調整"]},
+  {id:"3",name:"ペンタクルの3",en:"Three of Pentacles",suit:"pentacles",
+   upright:"チームワークと技術。協力して質の高い仕事を生み出す。スキルが認められる。",
+   reversed:"チームの不和。役割分担を見直して。コミュニケーション不足に注意。",
+   keywords:["協力","技術","成長"]},
+  {id:"4",name:"ペンタクルの4",en:"Four of Pentacles",suit:"pentacles",
+   upright:"安定と保守。築いたものを守る力。しかし執着しすぎないよう注意。",
+   reversed:"ケチや執着。お金や物への固執を手放すと、もっと豊かになれる。",
+   keywords:["安定","保守","執着"]},
+  {id:"5",name:"ペンタクルの5",en:"Five of Pentacles",suit:"pentacles",
+   upright:"困窮と孤立感。経済的・精神的に辛い時期。でも助けは近くにある。",
+   reversed:"困難からの回復。支援を受け入れて。状況は好転し始めている。",
+   keywords:["困窮","試練","回復"]},
+  {id:"6",name:"ペンタクルの6",en:"Six of Pentacles",suit:"pentacles",
+   upright:"寛大さと分かち合い。与えることで得られる豊かさ。バランスの取れた関係。",
+   reversed:"一方的な関係。見返りを期待しすぎていないか。対等な関係を目指して。",
+   keywords:["寛大","分配","慈善"]},
+  {id:"7",name:"ペンタクルの7",en:"Seven of Pentacles",suit:"pentacles",
+   upright:"忍耐と評価。種まきの時期は終わり、収穫を待つ段階。努力は必ず実る。",
+   reversed:"成果が出ない焦り。方法を見直す時かもしれない。でも諦めないで。",
+   keywords:["忍耐","評価","成長"]},
+  {id:"8",name:"ペンタクルの8",en:"Eight of Pentacles",suit:"pentacles",
+   upright:"勤勉と技術の向上。コツコツと積み重ねることで職人の域に達する。",
+   reversed:"単調な繰り返しへの倦怠。目的を見失わないで。新しい学びを取り入れて。",
+   keywords:["勤勉","修練","向上"]},
+  {id:"9",name:"ペンタクルの9",en:"Nine of Pentacles",suit:"pentacles",
+   upright:"自立と豊かさ。自分の力で築いた成果を楽しむ時。優雅な暮らしと自己実現。",
+   reversed:"物質的な豊かさと引き換えに失ったものがないか振り返って。",
+   keywords:["自立","豊穣","洗練"]},
+  {id:"10",name:"ペンタクルの10",en:"Ten of Pentacles",suit:"pentacles",
+   upright:"家族の繁栄と遺産。世代を超えて受け継がれる豊かさ。安定した基盤の完成。",
+   reversed:"家族間の金銭問題。物質に頼りすぎず、心のつながりを大切に。",
+   keywords:["家族","繁栄","遺産"]},
+  {id:"Pg",name:"ペンタクルのペイジ",en:"Page of Pentacles",suit:"pentacles",
+   upright:"学びへの意欲。新しいスキルや知識を吸収する時。着実な一歩を踏み出して。",
+   reversed:"学びの停滞。計画倒れにならないよう、実際に行動に移して。",
+   keywords:["学び","堅実","成長"]},
+  {id:"Kn",name:"ペンタクルのナイト",en:"Knight of Pentacles",suit:"pentacles",
+   upright:"堅実で着実な努力。派手さはないが確実に前進する。責任感が強い。",
+   reversed:"頑固さや変化への抵抗。柔軟性を持って。効率も意識して。",
+   keywords:["堅実","責任","努力"]},
+  {id:"Q",name:"ペンタクルのクイーン",en:"Queen of Pentacles",suit:"pentacles",
+   upright:"豊かさと実用的な知恵。家庭と仕事を両立する力。温かく現実的なサポート。",
+   reversed:"仕事と私生活のバランス崩壊。自分のケアも忘れないで。",
+   keywords:["豊かさ","実用","両立"]},
+  {id:"K",name:"ペンタクルのキング",en:"King of Pentacles",suit:"pentacles",
+   upright:"経済的成功と安定。ビジネスセンスと実行力で富を築く。信頼できるリーダー。",
+   reversed:"物質主義への警告。お金だけでは満たされない部分にも目を向けて。",
+   keywords:["成功","安定","実業"]}
+];
+
+// カード描画
+function renderCards(filter) {
+  const grid = document.getElementById('cardGrid');
+  const filtered = filter === 'all' ? CARDS : CARDS.filter(c => c.suit === filter);
+  
+  let html = '';
+  let currentSuit = '';
+  const suitNames = {major:'大アルカナ',wands:'ワンド（火）',cups:'カップ（水）',swords:'ソード（風）',pentacles:'ペンタクル（地）'};
+  
+  filtered.forEach((card, i) => {
+    if (filter === 'all' && card.suit !== currentSuit) {
+      currentSuit = card.suit;
+      html += `</div><h2 class="section-label">${suitNames[currentSuit]}</h2><div class="card-grid">`;
+    }
+    
+    html += `
+      <div class="tarot-card suit-${card.suit}" style="animation-delay:${(i%12)*0.05}s" onclick="this.classList.toggle('expanded')">
+        <div class="card-header">
+          <div>
+            <div class="card-name-jp">${card.name}</div>
+            <div class="card-name-en">${card.en}</div>
+          </div>
+          <div class="card-number">${card.id}</div>
+        </div>
+        <div class="card-keywords">
+          ${card.keywords.map(k => `<span class="keyword">${k}</span>`).join('')}
+        </div>
+        <div class="expand-hint">タップで詳細 ▾</div>
+        <div class="card-meanings">
+          <div class="meaning-label upright">▲ 正位置</div>
+          <div class="meaning-text">${card.upright}</div>
+          <div class="meaning-label reversed">▽ 逆位置</div>
+          <div class="meaning-text">${card.reversed}</div>
+        </div>
+      </div>`;
+  });
+  
+  grid.innerHTML = html;
+}
+
+// フィルター
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderCards(btn.dataset.filter);
+  });
+});
+
+renderCards('all');
+</script>
+
+</body>
+</html>
