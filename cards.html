@@ -625,43 +625,47 @@ const CARDS = [
 ];
 
 // カード描画
+function renderCard(card, i) {
+  return `
+    <div class="tarot-card suit-${card.suit}" style="animation-delay:${(i%12)*0.05}s" onclick="this.classList.toggle('expanded')">
+      <div class="card-header">
+        <div>
+          <div class="card-name-jp">${card.name}</div>
+          <div class="card-name-en">${card.en}</div>
+        </div>
+        <div class="card-number">${card.id}</div>
+      </div>
+      <div class="card-keywords">
+        ${card.keywords.map(k => `<span class="keyword">${k}</span>`).join('')}
+      </div>
+      <div class="expand-hint">タップで詳細 ▾</div>
+      <div class="card-meanings">
+        <div class="meaning-label upright">▲ 正位置</div>
+        <div class="meaning-text">${card.upright}</div>
+        <div class="meaning-label reversed">▽ 逆位置</div>
+        <div class="meaning-text">${card.reversed}</div>
+      </div>
+    </div>`;
+}
+
 function renderCards(filter) {
-  const grid = document.getElementById('cardGrid');
-  const filtered = filter === 'all' ? CARDS : CARDS.filter(c => c.suit === filter);
-  
-  let html = '';
-  let currentSuit = '';
+  const container = document.querySelector('.container');
   const suitNames = {major:'大アルカナ',wands:'ワンド（火）',cups:'カップ（水）',swords:'ソード（風）',pentacles:'ペンタクル（地）'};
-  
-  filtered.forEach((card, i) => {
-    if (filter === 'all' && card.suit !== currentSuit) {
-      currentSuit = card.suit;
-      html += `</div><h2 class="section-label">${suitNames[currentSuit]}</h2><div class="card-grid">`;
-    }
-    
-    html += `
-      <div class="tarot-card suit-${card.suit}" style="animation-delay:${(i%12)*0.05}s" onclick="this.classList.toggle('expanded')">
-        <div class="card-header">
-          <div>
-            <div class="card-name-jp">${card.name}</div>
-            <div class="card-name-en">${card.en}</div>
-          </div>
-          <div class="card-number">${card.id}</div>
-        </div>
-        <div class="card-keywords">
-          ${card.keywords.map(k => `<span class="keyword">${k}</span>`).join('')}
-        </div>
-        <div class="expand-hint">タップで詳細 ▾</div>
-        <div class="card-meanings">
-          <div class="meaning-label upright">▲ 正位置</div>
-          <div class="meaning-text">${card.upright}</div>
-          <div class="meaning-label reversed">▽ 逆位置</div>
-          <div class="meaning-text">${card.reversed}</div>
-        </div>
-      </div>`;
-  });
-  
-  grid.innerHTML = html;
+
+  let html = '';
+  if (filter === 'all') {
+    ['major','wands','cups','swords','pentacles'].forEach(suit => {
+      const suitCards = CARDS.filter(c => c.suit === suit);
+      html += `<h2 class="section-label">${suitNames[suit]}</h2><div class="card-grid">`;
+      suitCards.forEach((card, i) => { html += renderCard(card, i); });
+      html += `</div>`;
+    });
+  } else {
+    html += `<div class="card-grid">`;
+    CARDS.filter(c => c.suit === filter).forEach((card, i) => { html += renderCard(card, i); });
+    html += `</div>`;
+  }
+  container.innerHTML = html;
 }
 
 // フィルター
