@@ -695,33 +695,14 @@
             <div class="legal-links">
                 <a href="/cards.html">タロットカード一覧</a>
                 <span>|</span>
-                <a href="#" onclick="openModal('tokusho')">特定商取引法に基づく表記</a>
+                <a href="/tokusho.html">特定商取引法に基づく表記</a>
                 <span>|</span>
                 <a href="#" onclick="openModal('privacy')">プライバシーポリシー</a>
             </div>
             <div vid="62">[ NODE: TOKYO_01 ] [ LATENCY: 12MS ]</div>
         </div>
 
-        <!-- 特定商取引法モーダル -->
-        <div class="legal-modal" id="modal-tokusho">
-            <div class="legal-modal-content">
-                <button class="modal-close" onclick="closeModal('tokusho')">✕</button>
-                <h2>特定商取引法に基づく表記</h2>
-                <table class="legal-table">
-                    <tr><th>事業者名</th><td>sawada3</td></tr>
-                    <tr><th>代表者</th><td>Masaki Sawada</td></tr>
-                    <tr><th>所在地</th><td>3rd Floor, Ginza Yoshida Building II, 2-21-2 Ginza, Chuo-ku, Tokyo 104-0061 Japan</td></tr>
-                    <tr><th>連絡先</th><td>info@sawada3.com</td></tr>
-                    <tr><th>販売価格</th><td>月額500円（税込）</td></tr>
-                    <tr><th>支払方法</th><td>クレジットカード（PAY.JP経由）</td></tr>
-                    <tr><th>提供時期</th><td>決済完了後、即時利用可能</td></tr>
-                    <tr><th>解約方法</th><td>LINEトーク画面で「解約」と送信</td></tr>
-                    <tr><th>返金ポリシー</th><td>デジタルコンテンツの性質上、原則として返金不可。ただしサービスの重大な不具合が確認された場合は個別に対応いたします。</td></tr>
-                </table>
-            </div>
-        </div>
-
-        <!-- プライバシーポリシーモーダル -->
+                <!-- プライバシーポリシーモーダル -->
         <div class="legal-modal" id="modal-privacy">
             <div class="legal-modal-content">
                 <button class="modal-close" onclick="closeModal('privacy')">✕</button>
@@ -752,11 +733,11 @@
                 <p>適切なセキュリティ対策を実施し、お客様の情報を保護します。</p>
 
                 <h3>5. データの削除</h3>
-                <p>LINEアカウントをブロック後、info@sawada3.com までお問い合わせいただければ、データの削除に対応いたします。</p>
+                <p>LINEアカウントをブロック後、<a href="mailto:info@sawada3.com">info@sawada3.com</a> までお問い合わせいただければ、データの削除に対応いたします。</p>
 
                 <h3>6. お問い合わせ</h3>
                 <p>プライバシーに関するお問い合わせは下記までご連絡ください。</p>
-                <p>メール: info@sawada3.com</p>
+                <p>メール: <a href="mailto:info@sawada3.com">info@sawada3.com</a></p>
             </div>
         </div>
     </div>
@@ -913,18 +894,4 @@
             modal.classList.remove('active');
             setTimeout(() => {
                 modal.style.display = 'none';
-                modal.classList.remove('closing');
-                document.body.style.overflow = '';
-            }, 250);
-        }
-        document.querySelectorAll('.legal-modal').forEach(modal => {
-            modal.addEventListener('click', (e) => {
-                if (e.target === modal) {
-                    const type = modal.id.replace('modal-', '');
-                    closeModal(type);
-                }
-            });
-        });
-    </script>
-
-</body></html>
+          
